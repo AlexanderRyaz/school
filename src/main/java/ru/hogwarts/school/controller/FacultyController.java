@@ -18,7 +18,7 @@ public class FacultyController extends AbstractController<Faculty> {
         super(service);
     }
 
-    @GetMapping
+    @GetMapping("bycolor")
     public List<Faculty> facultiesByColor(@RequestParam(value = "color", required = false) String color) {
         return getAll().stream()
                 .filter(faculty -> faculty.getColor() != null)

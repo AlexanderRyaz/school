@@ -21,7 +21,8 @@ public abstract class AbstractService<T> {
     }
 
     public T update(T entity, Long id) {
-        return storage.put(id, entity);
+        storage.put(id, entity);
+        return storage.get(id);
     }
 
     public T delete(Long id) {

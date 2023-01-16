@@ -10,6 +10,10 @@ public class FacultyService extends AbstractService<Faculty> {
     @Override
     public Faculty addEntityToStorage(Faculty entity) {
         entity.setId(counter++);
-        return storage.put(entity.getId(), entity);
+        storage.put(entity.getId(), entity);
+        return entity;
+    }
+    public void clearStorage(){
+        storage.clear();
     }
 }

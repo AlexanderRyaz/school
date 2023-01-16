@@ -11,7 +11,11 @@ public class StudentService extends AbstractService<Student> {
     @Override
     public Student addEntityToStorage(Student entity) {
         entity.setId(counter++);
-        return storage.put(entity.getId(), entity);
+        storage.put(entity.getId(), entity);
+        return entity;
+    }
+    public void clearStorage(){
+        storage.clear();
     }
 }
 
