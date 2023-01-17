@@ -5,15 +5,14 @@ import ru.hogwarts.school.model.Faculty;
 
 @Service
 public class FacultyService extends AbstractService<Faculty> {
-    private static Long counter = 1L;
 
     @Override
-    public Faculty addEntityToStorage(Faculty entity) {
-        entity.setId(counter++);
-        storage.put(entity.getId(), entity);
+    public Faculty updateEntity(Faculty entity, Long id) {
+        entity.setId(id);
         return entity;
     }
-    public void clearStorage(){
-        storage.clear();
+
+    public void clearStorage() {
+        //  storage.clear();
     }
 }
