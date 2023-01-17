@@ -5,29 +5,33 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import ru.hogwarts.school.model.Faculty;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.SchoolRepository;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@WebMvcTest(StudentService.class)
+@WebMvcTest({StudentService.class, StudentRepository.class})
 class StudentServiceTest {
     @Autowired
     private StudentService service;
     private Long id;
+    @Autowired
+    private SchoolRepository<Student> studentRepository;
 
     @BeforeEach
     void setUp() {
         Student s1 = new Student("Harry Potter", 43);
         Student s2 = new Student("Hermione Granger", 44);
         Student s3 = new Student("Ronald Weasley", 43);
-        Student student = service.addEntityToStorage(s1);
+        Student student = service.create(s1);
         id = student.getId();
-        service.addEntityToStorage(s2);
-        service.addEntityToStorage(s3);
+        service.create(s2);
+        service.create(s3);
     }
 
     @AfterEach
@@ -62,21 +66,13 @@ class StudentServiceTest {
         Student student = new Student("Harry Potter", 45);
         student.setId(id);
         Student updatedStudent = service.update(student, id);
-        assertEquals(45,updatedStudent.getAge());
+        assertEquals(45, updatedStudent.getAge());
     }
 
     @Test
     void delete() {
         Student deletedStudent = service.delete(id);
         assertEquals("Harry Potter", deletedStudent.getName());
-    }
-
-    @Test
-    void addEntityToStorage() {
-        Student student = new Student("Neville Longbottom", 43);
-        Student actualCreateStudent = service.addEntityToStorage(student);
-        assertNotNull(actualCreateStudent.getId());
-        service.storage.containsKey(actualCreateStudent.getId());
     }
 
 }

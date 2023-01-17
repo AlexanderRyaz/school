@@ -8,7 +8,7 @@ import ru.hogwarts.school.service.AbstractService;
 import java.util.List;
 
 public class AbstractController<T> {
-    private AbstractService<T> service;
+    protected AbstractService<T> service;
 
 
     public AbstractController(AbstractService<T> service) {

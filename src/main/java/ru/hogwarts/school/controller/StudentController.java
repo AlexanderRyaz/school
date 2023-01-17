@@ -1,9 +1,10 @@
 package ru.hogwarts.school.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.AbstractService;
 
@@ -19,7 +20,7 @@ public class StudentController extends AbstractController<Student> {
 
     @GetMapping("byage")
     public List<Student> studentsByAge(@RequestParam(value = "age", required = false) int age) {
-        return getAll().stream().filter(student -> student.getAge() == age).toList();
+        return service.getAll().stream().filter(student -> student.getAge() == age).toList();
     }
 
 }

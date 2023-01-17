@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @WebMvcTest(FacultyService.class)
 class FacultyServiceTest {
     @Autowired
@@ -22,10 +23,10 @@ class FacultyServiceTest {
         Faculty f1 = new Faculty("Gryffindor", "red");
         Faculty f2 = new Faculty("Hufflepuff", "yellow");
         Faculty f3 = new Faculty("Ravenclaw", "blue");
-        Faculty faculty = service.addEntityToStorage(f1);
+        Faculty faculty = service.create(f1);
         id = faculty.getId();
-        service.addEntityToStorage(f2);
-        service.addEntityToStorage(f3);
+        service.create(f2);
+        service.create(f3);
     }
 
     @AfterEach
@@ -59,21 +60,13 @@ class FacultyServiceTest {
         Faculty faculty = new Faculty("Gryffindor", "gold");
         faculty.setId(id);
         Faculty updatedFaculty = service.update(faculty, id);
-        assertEquals("gold",updatedFaculty.getColor());
+        assertEquals("gold", updatedFaculty.getColor());
     }
 
     @Test
     void delete() {
         Faculty deletedFaculty = service.delete(id);
         assertEquals("Gryffindor", deletedFaculty.getName());
-    }
-
-    @Test
-    void addEntityToStorage() {
-        Faculty faculty = new Faculty("Slytherin", "green");
-        Faculty actualCreateFaculty = service.addEntityToStorage(faculty);
-        assertNotNull(actualCreateFaculty.getId());
-        service.storage.containsKey(actualCreateFaculty.getId());
     }
 
 }
