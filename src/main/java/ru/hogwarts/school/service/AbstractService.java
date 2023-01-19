@@ -5,10 +5,15 @@ import org.webjars.NotFoundException;
 import ru.hogwarts.school.repository.SchoolRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class AbstractService<T> {
-  @Autowired
+
     private SchoolRepository<T> repository;
+
+    public AbstractService(SchoolRepository<T> repository) {
+        this.repository = repository;
+    }
 
     public T create(T entity) {
         return repository.saveAndFlush(entity);
@@ -16,16 +21,21 @@ public abstract class AbstractService<T> {
     }
 
     public T getById(Long id) {
-        return repository.findById(id);
+        Optional<T> optionalT = repository.findById(id);
+        if (optionalT.isEmpty()) {
+            throw new NotFoundException("entity not found");
+        }
+        return optionalT.get();
     }
+
 
     public List<T> getAll() {
         return repository.findAll();
     }
 
     public T update(T entity, Long id) {
-        T byId = repository.findById(id);
-        if (byId==null){
+        Optional<T> byId = repository.findById(id);
+        if (byId.isEmpty()) {
             throw new NotFoundException("entity not found");
         }
         T updatedEntity = updateEntity(entity, id);
@@ -33,11 +43,12 @@ public abstract class AbstractService<T> {
     }
 
     public T delete(Long id) {
-        T byId = repository.findById(id);
-        if (byId==null){
+        Optional<T> byId = repository.findById(id);
+        if (byId.isEmpty()) {
             throw new NotFoundException("entity not found");
         }
-        return repository.deleteById(id);
+        repository.deleteById(id);
+        return byId.get();
     }
 
     public abstract T updateEntity(T entity, Long id);

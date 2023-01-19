@@ -22,7 +22,7 @@ public class AbstractController<T> {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<T> update(@PathVariable Long id, T entity) {
+    public ResponseEntity<T> update(@PathVariable Long id, @RequestBody T entity) {
         T update = service.update(entity, id);
         return new ResponseEntity<>(update, HttpStatus.OK);
     }

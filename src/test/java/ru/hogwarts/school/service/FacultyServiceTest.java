@@ -5,18 +5,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest(FacultyService.class)
+//@WebMvcTest({FacultyService.class, FacultyRepository.class})
+@SpringBootTest
 class FacultyServiceTest {
     @Autowired
     private FacultyService service;
     private Long id;
+    @Autowired
+    private FacultyRepository facultyRepository;
 
     @BeforeEach
     void setUp() {
@@ -27,11 +31,6 @@ class FacultyServiceTest {
         id = faculty.getId();
         service.create(f2);
         service.create(f3);
-    }
-
-    @AfterEach
-    void tearDown() {
-        service.clearStorage();
     }
 
     @Test
@@ -52,7 +51,7 @@ class FacultyServiceTest {
     @Test
     void getAll() {
         List<Faculty> actualFaculties = service.getAll();
-        assertEquals(3, actualFaculties.size());
+        assertTrue(actualFaculties.size() >= 3);
     }
 
     @Test

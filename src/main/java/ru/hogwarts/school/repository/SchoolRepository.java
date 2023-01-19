@@ -1,14 +1,17 @@
 package ru.hogwarts.school.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-@Repository
+import java.util.Optional;
+
+@NoRepositoryBean
 public interface SchoolRepository<T> extends JpaRepository<T, Long> {
-    T findById(Long id);
+    Optional<T> findById(Long id);
 
     List<T> findAll();
 
-    T deleteById(Long id);
+    void deleteById(Long id);
 }
