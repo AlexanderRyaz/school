@@ -26,6 +26,7 @@ import java.util.List;
 @RequestMapping("student")
 public class StudentController extends AbstractController<Student> {
     private AvatarService avatarService;
+
     @Autowired
     public StudentController(AbstractService<Student> service, AvatarService avatarService) {
         super(service);
@@ -43,15 +44,18 @@ public class StudentController extends AbstractController<Student> {
         List<Student> students = ((StudentService) service).findStudentByAgeBetween(min, max);
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
-@GetMapping("{id}/faculty")
+
+    @GetMapping("{id}/faculty")
     public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
         Faculty faculty = ((StudentService) service).getFaculty(id);
-        return new ResponseEntity<>(faculty,HttpStatus.OK);
+        return new ResponseEntity<>(faculty, HttpStatus.OK);
     }
-    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Avatar> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
 
-        ((StudentService)service).uploadAvatar(id, avatar);
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long id,
+                                               @RequestParam MultipartFile avatar) throws IOException {
+
+        ((StudentService) service).uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
     }
 
@@ -68,7 +72,7 @@ public class StudentController extends AbstractController<Student> {
 
     @GetMapping(value = "/{id}/avatar")
     public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
-        Avatar avatar = ((StudentService)service).findAvatar(id);
+        Avatar avatar = ((StudentService) service).findAvatar(id);
 
         Path path = Path.of(avatar.getFilePath());
 

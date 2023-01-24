@@ -6,10 +6,10 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name="avatars")
+@Table(name = "avatars")
 public class Avatar {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long avatarId;
     private String filePath;
     private long fileSize;
@@ -17,7 +17,5 @@ public class Avatar {
     @Lob
     private byte[] data;
     @OneToOne
-//    @MapsId
-//    @JoinColumn(name="student_id")
     private Student student;
 }

@@ -48,9 +48,13 @@ public class StudentService extends AbstractService<Student> {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        if (file.getSize() > 1024 * 300) {
+            throw new RuntimeException("размер файла превышен");
+        }
         Optional<Student> optionalStudent = repository.findById(studentId);
         if (optionalStudent.isPresent()) {
-            Path filePath = Path.of(avatarsDir, optionalStudent.get().getId() + "." + getExtension(file.getOriginalFilename()));
+            Path filePath = Path.of(avatarsDir, optionalStudent.get().getId() +
+                    "." + getExtension(file.getOriginalFilename()));
             Files.createDirectories(filePath.getParent());
             Files.deleteIfExists(filePath);
             try (
