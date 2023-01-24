@@ -20,7 +20,7 @@ public class StudentController extends AbstractController<Student> {
 
     @GetMapping("byage")
     public List<Student> studentsByAge(@RequestParam(value = "age", required = false) int age) {
-        return getAll().stream().filter(student -> student.getAge() == age).toList();
+        return service.getAll().stream().filter(student -> student.getAge() == age).toList();
     }
 
 }
