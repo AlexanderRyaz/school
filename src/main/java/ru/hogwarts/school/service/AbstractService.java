@@ -2,6 +2,7 @@ package ru.hogwarts.school.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.webjars.NotFoundException;
+import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.repository.SchoolRepository;
 
 import java.util.List;

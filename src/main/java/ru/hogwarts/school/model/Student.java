@@ -21,6 +21,9 @@ public class Student {
     @ManyToOne
     @JoinColumn(name="faculty_id", nullable=false)
     private Faculty faculty;
+    @OneToOne(mappedBy = "student")
+    @PrimaryKeyJoinColumn
+    private Avatar avatar;
 
     public Student(String name, int age) {
         this.name = name;
