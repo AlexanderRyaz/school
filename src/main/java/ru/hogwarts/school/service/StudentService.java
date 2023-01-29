@@ -83,6 +83,9 @@ public class StudentService extends AbstractService<Student> {
     public Avatar findAvatar(Long id) {
         return avatarRepository.findByStudentId(id).orElseThrow();
     }
+    public List<Student> studentsByAge(int age) {
+        return repository.findAll().stream().filter(student -> student.getAge() == age).toList();
+    }
 }
 
 

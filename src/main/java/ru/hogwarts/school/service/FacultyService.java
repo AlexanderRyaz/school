@@ -34,4 +34,10 @@ public class FacultyService extends AbstractService<Faculty> {
         return byId.getStudents();
 
     }
+
+    public List<Faculty> facultiesByColor(String color) {
+        return repository.findAll().stream()
+                .filter(faculty -> faculty.getColor() != null)
+                .filter(faculty -> faculty.getColor().equals(color)).toList();
+    }
 }

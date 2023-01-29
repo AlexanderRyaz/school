@@ -20,10 +20,9 @@ public class FacultyController extends AbstractController<Faculty> {
     }
 
     @GetMapping("bycolor")
-    public List<Faculty> facultiesByColor(@RequestParam(value = "color", required = false) String color) {
-        return service.getAll().stream()
-                .filter(faculty -> faculty.getColor() != null)
-                .filter(faculty -> faculty.getColor().equals(color)).toList();
+    public ResponseEntity<List<Faculty>> facultiesByColor(@RequestParam(value = "color", required = false) String color) {
+        List<Faculty> faculties = ((FacultyService) service).facultiesByColor(color);
+        return new ResponseEntity<>(faculties, HttpStatus.OK);
     }
 
     @GetMapping("bycolororname")
@@ -36,6 +35,6 @@ public class FacultyController extends AbstractController<Faculty> {
     @GetMapping("{id}/students")
     public ResponseEntity<List<Student>> getStudents(@PathVariable Long id) {
         List<Student> students = ((FacultyService) service).getStudents(id);
-        return new ResponseEntity<>(students,HttpStatus.OK);
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 }

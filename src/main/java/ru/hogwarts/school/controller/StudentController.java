@@ -34,8 +34,9 @@ public class StudentController extends AbstractController<Student> {
     }
 
     @GetMapping("byage")
-    public List<Student> studentsByAge(@RequestParam(value = "age", required = false) int age) {
-        return service.getAll().stream().filter(student -> student.getAge() == age).toList();
+    public ResponseEntity<List<Student>> studentsByAge(@RequestParam(value = "age", required = false) int age) {
+        List<Student> students = ((StudentService) service).studentsByAge(age);
+        return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @GetMapping("byagebetween")
