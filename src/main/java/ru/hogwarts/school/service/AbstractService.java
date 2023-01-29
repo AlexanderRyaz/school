@@ -52,4 +52,5 @@ public abstract class AbstractService<T> {
     }
 
     public abstract T updateEntity(T entity, Long id);
+
 }

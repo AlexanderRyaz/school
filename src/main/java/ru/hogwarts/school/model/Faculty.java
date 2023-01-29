@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
@@ -19,6 +20,8 @@ public class Faculty {
    @Column(name = "faculty_name")
     private String name;
     private String color;
+    @OneToMany(mappedBy = "faculty")
+    private List<Student>students;
 
     public Faculty(String name, String color) {
         this.name = name;

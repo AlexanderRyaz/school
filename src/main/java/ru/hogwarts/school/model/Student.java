@@ -18,6 +18,9 @@ public class Student {
    @Column(name = "student_name")
    private String name;
     private int age;
+    @ManyToOne
+    @JoinColumn(name="faculty_id", nullable=false)
+    private Faculty faculty;
 
     public Student(String name, int age) {
         this.name = name;
