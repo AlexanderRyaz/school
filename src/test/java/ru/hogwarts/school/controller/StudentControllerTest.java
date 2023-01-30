@@ -12,6 +12,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
+import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.io.IOException;
@@ -36,6 +37,8 @@ class StudentControllerTest {
     private StudentController studentController;
     @MockBean
     private AvatarRepository avatarRepository;
+    @MockBean
+    private AvatarService avatarService;
 
     @Test
     void studentsByAge() {
@@ -73,17 +76,28 @@ class StudentControllerTest {
 
     @Test
     void uploadAvatar() throws IOException {
-        when(avatarRepository.findByStudentId(anyLong())).thenReturn(Optional.of(new Avatar()));
-        doNothing().when(avatarRepository.save(any()));
-        when(studentRepository.findById(anyLong())).thenReturn(Optional.of(studentById()));
+       doNothing().when(studentService).uploadAvatar(anyLong(),any());
+        ResponseEntity<String> forEntity = testRestTemplate
+                .getForEntity(STUDENT_MAPPING + "/3/avatar", String.class);
+        assertEquals(HttpStatus.OK, forEntity.getStatusCode());
     }
 
     @Test
     void downloadAvatar() {
+        when(avatarService.findById(anyLong())).thenCallRealMethod();
+        when(avatarRepository.findByStudentId(anyLong())).thenReturn(Optional.of(createAvatar()));
+//        testRestTemplate.getForEntity(STUDENT_MAPPING+"3/avatar/preview");
+
     }
 
     @Test
     void testDownloadAvatar() {
+        when(avatarService.findById(anyLong())).thenCallRealMethod();
+        when(avatarRepository.findByStudentId(anyLong())).thenReturn(Optional.of(createAvatar()));
+        ResponseEntity<Void> entity = testRestTemplate.getForEntity(STUDENT_MAPPING + "3/avatar", Void.class);
+        assertEquals(HttpStatus.OK,entity.getStatusCode());
+        assertEquals("png",entity.getHeaders().getContentType().toString());
+        assertEquals(5,entity.getHeaders().getContentLength());
     }
 
     private List<Student> studentList() {
@@ -107,12 +121,13 @@ class StudentControllerTest {
         s1.setFaculty(faculty);
         return s1;
     }
-//    private Avatar createAvatar(){
-//        Avatar avatar = new Avatar();
-//        avatar.setFilePath(filePath.toString());
-//        avatar.setFileSize(file.getSize());
-//        avatar.setMediaType(file.getContentType());
-//        avatar.setData(file.getBytes());
-//    }
+    private Avatar createAvatar(){
+        Avatar avatar = new Avatar();
+        avatar.setFilePath("path/to/avatar");
+        avatar.setFileSize(600);
+        avatar.setMediaType("png");
+        avatar.setData(new byte[]{1,2,3,4,5});
+        return avatar;
+    }
 
 }
