@@ -2,8 +2,10 @@ package ru.hogwarts.school.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -25,8 +27,9 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StudentControllerTest {
-    private static final String STUDENT_MAPPING = "/student";
+
     @Autowired
     private TestRestTemplate testRestTemplate;
     @MockBean
@@ -39,13 +42,16 @@ class StudentControllerTest {
     private AvatarRepository avatarRepository;
     @MockBean
     private AvatarService avatarService;
+    @LocalServerPort
+    private int port;
+    private final String STUDENT_MAPPING = "/student";
 
     @Test
     void studentsByAge() {
         when(studentService.studentsByAge(anyInt())).thenCallRealMethod();
         when(studentRepository.findAll()).thenReturn(studentList());
         ResponseEntity<List> forEntity = testRestTemplate
-                .getForEntity(STUDENT_MAPPING + "/byage?age=15", List.class);
+                .getForEntity("http://localhost:" + port + STUDENT_MAPPING + "/byage?age=15", List.class);
         assertEquals(HttpStatus.OK, forEntity.getStatusCode());
         assertEquals(2, forEntity.getBody().size());
     }
@@ -65,7 +71,7 @@ class StudentControllerTest {
         when(studentService.getFaculty(anyLong())).thenCallRealMethod();
         when(studentRepository.findById(anyLong())).thenReturn(Optional.of(studentById()));
         ResponseEntity<Faculty> forEntity = testRestTemplate
-                .getForEntity(STUDENT_MAPPING + "/3/faculty", Faculty.class);
+                .getForEntity("http://localhost:" + port +STUDENT_MAPPING + "/3/faculty", Faculty.class);
         assertEquals(HttpStatus.OK, forEntity.getStatusCode());
         Faculty body = forEntity.getBody();
         assertNotNull(body);
@@ -76,17 +82,21 @@ class StudentControllerTest {
 
     @Test
     void uploadAvatar() throws IOException {
-       doNothing().when(studentService).uploadAvatar(anyLong(),any());
+        doNothing().when(studentService).uploadAvatar(anyLong(), any());
         ResponseEntity<String> forEntity = testRestTemplate
-                .getForEntity(STUDENT_MAPPING + "/3/avatar", String.class);
+                .postForEntity("http://localhost:" + port +STUDENT_MAPPING + "/3/avatar", new Object(), String.class);
         assertEquals(HttpStatus.OK, forEntity.getStatusCode());
+
     }
 
     @Test
     void downloadAvatar() {
         when(avatarService.findById(anyLong())).thenCallRealMethod();
         when(avatarRepository.findByStudentId(anyLong())).thenReturn(Optional.of(createAvatar()));
-//        testRestTemplate.getForEntity(STUDENT_MAPPING+"3/avatar/preview");
+        ResponseEntity<String> entity = testRestTemplate.getForEntity("http://localhost:" + port +STUDENT_MAPPING + "/3/avatar/preview", String.class);
+        assertEquals(HttpStatus.OK, entity.getStatusCode());
+        assertEquals("png", entity.getHeaders().getContentType().toString());
+        assertEquals(5, entity.getHeaders().getContentLength());
 
     }
 
@@ -94,10 +104,10 @@ class StudentControllerTest {
     void testDownloadAvatar() {
         when(avatarService.findById(anyLong())).thenCallRealMethod();
         when(avatarRepository.findByStudentId(anyLong())).thenReturn(Optional.of(createAvatar()));
-        ResponseEntity<Void> entity = testRestTemplate.getForEntity(STUDENT_MAPPING + "3/avatar", Void.class);
-        assertEquals(HttpStatus.OK,entity.getStatusCode());
-        assertEquals("png",entity.getHeaders().getContentType().toString());
-        assertEquals(5,entity.getHeaders().getContentLength());
+        ResponseEntity<Void> entity = testRestTemplate.getForEntity("http://localhost:" + port + STUDENT_MAPPING + "/3/avatar", Void.class);
+        assertEquals(HttpStatus.OK, entity.getStatusCode());
+        assertEquals("png", entity.getHeaders().getContentType().toString());
+        assertEquals(5, entity.getHeaders().getContentLength());
     }
 
     private List<Student> studentList() {
@@ -121,12 +131,13 @@ class StudentControllerTest {
         s1.setFaculty(faculty);
         return s1;
     }
-    private Avatar createAvatar(){
+
+    private Avatar createAvatar() {
         Avatar avatar = new Avatar();
         avatar.setFilePath("path/to/avatar");
         avatar.setFileSize(600);
         avatar.setMediaType("png");
-        avatar.setData(new byte[]{1,2,3,4,5});
+        avatar.setData(new byte[]{1, 2, 3, 4, 5});
         return avatar;
     }
 
