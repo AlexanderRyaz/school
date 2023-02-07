@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
@@ -14,11 +15,13 @@ import javax.persistence.*;
 @Table(name="faculties")
 public class Faculty {
     @Id
-   @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
    @Column(name = "faculty_name")
     private String name;
     private String color;
+    @OneToMany(mappedBy = "faculty")
+    private List<Student>students;
 
     public Faculty(String name, String color) {
         this.name = name;
