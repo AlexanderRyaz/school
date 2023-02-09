@@ -1,5 +1,8 @@
 package ru.hogwarts.school.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class StudentService extends AbstractService<Student> {
+
+    Logger logger = LoggerFactory.getLogger(StudentService.class);
     private StudentRepository repository;
     private AvatarRepository avatarRepository;
     @Value("${path.to.avatars.folder}")
@@ -34,21 +39,26 @@ public class StudentService extends AbstractService<Student> {
 
     @Override
     public Student updateEntity(Student entity, Long id) {
+        logger.info("Was invoked method for update student");
         entity.setId(id);
         return entity;
     }
 
     public List<Student> findStudentByAgeBetween(int min, int max) {
+        logger.info("Was invoked method for findStudentByAgeBetween");
         return repository.findByAgeBetween(min, max);
     }
 
     public Faculty getFaculty(Long id) {
+        logger.info("Was invoked method for getFaculty");
         Student byId = getById(id);
         return byId.getFaculty();
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        logger.info("Was invoked method for uploadAvatar");
         if (file.getSize() > 1024 * 300) {
+            logger.error("Размер файла больше допустимого");
             throw new RuntimeException("размер файла превышен");
         }
         Optional<Student> optionalStudent = repository.findById(studentId);
@@ -77,26 +87,32 @@ public class StudentService extends AbstractService<Student> {
     }
 
     private String getExtension(String fileName) {
+        logger.debug("Получаем расширение для файла");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
     public Avatar findAvatar(Long id) {
+        logger.info("Получаем аватар студента");
         return avatarRepository.findByStudentId(id).orElseThrow();
     }
 
     public List<Student> studentsByAge(int age) {
+        logger.info("Получаем студента по возрасту");
         return repository.findAll().stream().filter(student -> student.getAge() == age).toList();
     }
 
     public int getStudentCount() {
+        logger.info("Получаем кол-во студентов");
         return repository.getStudentCount();
     }
 
     public double getAverageStudentAge() {
+        logger.info("Получаем средний возраст студентов");
         return repository.getAverageStudentAge();
     }
 
     public List<Student> lastStudents(int count) {
+        logger.info("Получение студентов отсортированных по айди");
         return repository.lastStudents(count);
     }
 }
