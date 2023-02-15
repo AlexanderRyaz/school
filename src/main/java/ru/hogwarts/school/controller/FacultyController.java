@@ -10,6 +10,7 @@ import ru.hogwarts.school.service.AbstractService;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("faculty")
@@ -36,5 +37,20 @@ public class FacultyController extends AbstractController<Faculty> {
     public ResponseEntity<List<Student>> getStudents(@PathVariable Long id) {
         List<Student> students = ((FacultyService) service).getStudents(id);
         return new ResponseEntity<>(students, HttpStatus.OK);
+    }
+
+    @GetMapping("longestFacultyName")
+    public ResponseEntity<String> longestFacultyName() {
+        String longestFacultyName = ((FacultyService) service).longestFacultyName();
+        return new ResponseEntity<>(longestFacultyName, HttpStatus.OK);
+    }
+
+    @GetMapping("calculateInt")
+    public ResponseEntity<Long> calculateInt() {
+        long startTime = System.nanoTime();
+        int sum = Stream.iterate(1, a -> a + 1).parallel().limit(1_000_000).reduce(0, (a, b) -> a + b);
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        return new ResponseEntity<>(duration, HttpStatus.OK);
     }
 }

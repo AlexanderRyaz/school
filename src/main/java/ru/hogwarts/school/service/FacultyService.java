@@ -9,6 +9,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.SchoolRepository;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -46,5 +47,11 @@ public class FacultyService extends AbstractService<Faculty> {
         return repository.findAll().stream()
                 .filter(faculty -> faculty.getColor() != null)
                 .filter(faculty -> faculty.getColor().equals(color)).toList();
+    }
+
+    public String longestFacultyName() {
+        return repository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length)).orElse(null);
     }
 }
