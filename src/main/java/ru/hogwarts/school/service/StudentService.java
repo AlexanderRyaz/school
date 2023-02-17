@@ -16,6 +16,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -119,10 +120,31 @@ public class StudentService extends AbstractService<Student> {
 
     public List<String> startsWithA() {
         List<Student> all = repository.findAll();
-       return all.stream()
+        return all.stream()
                 .map(student -> student.getName().toUpperCase())
                 .filter(name -> name.startsWith("A"))
                 .sorted().collect(Collectors.toList());
+    }
+
+    public void multiThreadingSynchronized() {
+        List<Student> all = getAll().stream().sorted(Comparator.comparing(Student::getName)).toList();
+
+        Thread thread2 = new Thread(() -> {
+            printStudentName(all.get(2).getName());
+            printStudentName(all.get(3).getName());
+        });
+        Thread thread3 = new Thread(() -> {
+            printStudentName(all.get(4).getName());
+            printStudentName(all.get(5).getName());
+        });
+        printStudentName(all.get(0).getName());
+        printStudentName(all.get(1).getName());
+        thread2.start();
+        thread3.start();
+    }
+
+    private synchronized void printStudentName(String studentName) {
+        System.out.println(studentName);
     }
 }
 

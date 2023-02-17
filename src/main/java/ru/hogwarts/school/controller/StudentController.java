@@ -110,8 +110,9 @@ public class StudentController extends AbstractController<Student> {
         List<String> strings = ((StudentService) service).startsWithA();
         return new ResponseEntity<>(strings, HttpStatus.OK);
     }
+
     @GetMapping(value = "multiThreading")
-    public void multiThreading(){
+    public void multiThreading() {
         List<Student> all = service.getAll();
 
         Thread thread2 = new Thread(() -> {
@@ -127,24 +128,12 @@ public class StudentController extends AbstractController<Student> {
         thread2.start();
         thread3.start();
     }
-    @GetMapping(value = "multiThreadingSynchronized")
-    public void multiThreadingSynchronized(){
-        List<Student> all = service.getAll().stream().sorted(Comparator.comparing(Student::getName)).toList();
 
-        Thread thread2 = new Thread(() -> {
-            System.out.println(all.get(2).getName());
-            System.out.println(all.get(3).getName());
-        });
-        Thread thread3 = new Thread(() -> {
-            System.out.println(all.get(4).getName());
-            System.out.println(all.get(5).getName());
-        });
-        synchronized(all){
-        System.out.println(all.get(0).getName());
-        System.out.println(all.get(1).getName());
-        thread2.start();
-        thread3.start();}
+    @GetMapping(value = "multiThreadingSynchronized")
+    public void multiThreadingSynchronized() {
+        ((StudentService) service).multiThreadingSynchronized();
     }
+
 
 }
 
