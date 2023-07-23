@@ -10,17 +10,19 @@ import javax.persistence.*;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name="students")
+@Table(name = "students")
 public class Student {
-   @Id
-   @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-   @Column(name = "student_name")
-   private String name;
+    @Column(name = "student_name")
+    private String name;
     private int age;
     @ManyToOne
-    @JoinColumn(name="faculty_id", nullable=false)
+    @JoinColumn(name = "faculty_id")
     private Faculty faculty;
+    @OneToOne(mappedBy = "student")
+    private Avatar avatar;
 
     public Student(String name, int age) {
         this.name = name;
