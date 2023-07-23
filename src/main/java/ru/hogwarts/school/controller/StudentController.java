@@ -97,9 +97,16 @@ public class StudentController extends AbstractController<Student> {
         double averageAgeStudent = ((StudentService) service).getAverageStudentAge();
         return new ResponseEntity<>(averageAgeStudent, HttpStatus.OK);
     }
+
     @GetMapping(value = "last")
-    public ResponseEntity<List<Student>>lastStudents(@RequestParam(name="count",required = false)int count){
-        List<Student>lastCountStudents=((StudentService)service).lastStudents(count);
-        return new ResponseEntity<>(lastCountStudents,HttpStatus.OK);
+    public ResponseEntity<List<Student>> lastStudents(@RequestParam(name = "count", required = false) int count) {
+        List<Student> lastCountStudents = ((StudentService) service).lastStudents(count);
+        return new ResponseEntity<>(lastCountStudents, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "startsWith")
+    public ResponseEntity<List<String>> startsWithA() {
+        List<String> strings = ((StudentService) service).startsWithA();
+        return new ResponseEntity<>(strings, HttpStatus.OK);
     }
 }

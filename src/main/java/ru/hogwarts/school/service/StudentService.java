@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -108,12 +109,20 @@ public class StudentService extends AbstractService<Student> {
 
     public double getAverageStudentAge() {
         logger.info("Получаем средний возраст студентов");
-        return repository.getAverageStudentAge();
+        return repository.findAll().stream().mapToInt(Student::getAge).average().orElse(0);
     }
 
     public List<Student> lastStudents(int count) {
         logger.info("Получение студентов отсортированных по айди");
         return repository.lastStudents(count);
+    }
+
+    public List<String> startsWithA() {
+        List<Student> all = repository.findAll();
+       return all.stream()
+                .map(student -> student.getName().toUpperCase())
+                .filter(name -> name.startsWith("A"))
+                .sorted().collect(Collectors.toList());
     }
 }
 
