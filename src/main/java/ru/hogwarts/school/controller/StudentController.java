@@ -85,4 +85,21 @@ public class StudentController extends AbstractController<Student> {
             is.transferTo(os);
         }
     }
+
+    @GetMapping(value = "count")
+    public ResponseEntity<Integer> getStudentCount() {
+        int studentCount = ((StudentService) service).getStudentCount();
+        return new ResponseEntity<>(studentCount, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "average/age")
+    public ResponseEntity<Double> getAverageStudentAge() {
+        double averageAgeStudent = ((StudentService) service).getAverageStudentAge();
+        return new ResponseEntity<>(averageAgeStudent, HttpStatus.OK);
+    }
+    @GetMapping(value = "last")
+    public ResponseEntity<List<Student>>lastStudents(@RequestParam(name="count",required = false)int count){
+        List<Student>lastCountStudents=((StudentService)service).lastStudents(count);
+        return new ResponseEntity<>(lastCountStudents,HttpStatus.OK);
+    }
 }
